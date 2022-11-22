@@ -18,7 +18,7 @@ func NewHttpClient() *httpClient {
 	return &httpClient{}
 }
 
-func GetResponse(urls string, headers map[string]string) ([]byte, error) {
+func GetResponse(urls string, headers map[string]string, timeout time.Duration) ([]byte, error) {
 	maxRetry := 3
 	i := 0
 	for {
@@ -35,7 +35,6 @@ func GetResponse(urls string, headers map[string]string) ([]byte, error) {
 			}
 		}
 		//设置超时时间
-		timeout := time.Duration(20 * time.Second)
 		client := &http.Client{
 			Timeout: timeout,
 		}
@@ -180,7 +179,7 @@ func WechatAlarmMsg(key string, msg string) {
 //获得html内容
 func GetHtml(url string, headers map[string]string) ([]byte, error) {
 	var logInfo string
-	response, err := GetResponse(url, headers)
+	response, err := GetResponse(url, headers, 3*time.Second)
 	if err != nil {
 		logInfo = fmt.Sprintf("http 请求失败，url:%v,err:%v", url, err)
 		return nil, errors.New(logInfo)

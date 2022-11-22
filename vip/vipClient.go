@@ -15,10 +15,11 @@ import (
 )
 
 type VipClient struct {
+	Timeout time.Duration
 }
 
-func NewVipClient() *VipClient {
-	return &VipClient{}
+func NewVipClient(timeout time.Duration) *VipClient {
+	return &VipClient{Timeout: timeout}
 }
 
 func (j *VipClient) Request(params VipBaseApiRequest, isNeedAuth bool) (string, error) {
@@ -46,7 +47,7 @@ func (j *VipClient) Request(params VipBaseApiRequest, isNeedAuth bool) (string, 
 		fields["accessToken"] = accessToken
 	}
 
-	return HttpPost(params.GetConfig().BaseUrl+"?"+getQueryString(fields), string(busiParams))
+	return HttpPost(params.GetConfig().BaseUrl+"?"+getQueryString(fields), string(busiParams), j.Timeout)
 }
 
 func (j *VipClient) createRequestSign(access_token, appKey, format, language, method, service, timestamp, version, busiParams, appSecret string) string {
@@ -85,11 +86,11 @@ func Hmac(data, key string) string {
 	return strings.ToUpper(hex.EncodeToString(hmac.Sum([]byte(""))))
 }
 
-func HttpPost(urls string, data string) (string, error) {
+func HttpPost(urls string, data string, timeout time.Duration) (string, error) {
 	var c *http.Client = &http.Client{
 		Transport: &http.Transport{
 			Dial: func(netw, addr string) (net.Conn, error) {
-				c, err := net.DialTimeout(netw, addr, time.Second*3)
+				c, err := net.DialTimeout(netw, addr, timeout)
 				if err != nil {
 					fmt.Println("dail timeout", err)
 					return nil, err
@@ -117,4 +118,4 @@ func HttpPost(urls string, data string) (string, error) {
 	return string(body), nil
 }
 
-var DefaultVipApiClient *VipClient = NewVipClient()
+var DefaultVipApiClient *VipClient = NewVipClient(3 * time.Second)

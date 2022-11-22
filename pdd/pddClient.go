@@ -14,14 +14,20 @@ type pddClient struct {
 	ClientId     string
 	ClientSecret string
 	gatewayUrl   string
+	Timeout      time.Duration
 }
 
-func NewPddClient(clientId, clientSecret string) *pddClient {
+func NewPddClient(clientId, clientSecret string, timeout time.Duration) *pddClient {
 	return &pddClient{
 		ClientId:     clientId,
 		ClientSecret: clientSecret,
 		gatewayUrl:   "https://gw-api.pinduoduo.com/api/router",
+		Timeout:      timeout,
 	}
+}
+
+func (c *pddClient) SetTimeout(timeout time.Duration) {
+	c.Timeout = timeout
 }
 
 func (c *pddClient) generateSign(params map[string]string) string {
@@ -55,7 +61,7 @@ func (c *pddClient) Execute(req Request, isPost bool) (string, error) {
 		return utils.HttpPost(c.gatewayUrl, sysParams)
 	}
 
-	response, err := utils.GetResponse(utils.SetQuery(c.gatewayUrl, sysParams), nil)
+	response, err := utils.GetResponse(utils.SetQuery(c.gatewayUrl, sysParams), nil, c.Timeout)
 	if err != nil {
 		return "", err
 	}

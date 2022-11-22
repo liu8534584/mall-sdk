@@ -30,6 +30,10 @@ func NewDataokeClient(appKey, appSecret string, timeout time.Duration) *client {
 	}
 }
 
+func (c *client) Timout(timeout time.Duration) {
+	c.Timeout = timeout
+}
+
 // GetRankList 获取榜单列表
 func (c *client) GetRankList(rankType, cid, pageNo, pageSize int) (rankList []RankList, err error) {
 	data := map[string]string{
@@ -63,7 +67,7 @@ func (c *client) doRequest(method string, data map[string]string) (Response, err
 	data["appKey"] = c.AppKey
 	data["sign"] = c.createSign(data)
 	urlPath = utils.SetQuery(urlPath, data)
-	resp, err := utils.GetResponse(urlPath, nil)
+	resp, err := utils.GetResponse(urlPath, nil, c.Timeout)
 	var res Response
 	if err != nil {
 		return res, err
