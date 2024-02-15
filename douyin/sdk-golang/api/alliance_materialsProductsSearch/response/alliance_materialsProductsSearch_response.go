@@ -1,0 +1,50 @@
+package alliance_materialsProductsSearch_response
+
+import (
+	"doudian.com/open/sdk_golang/core"
+)
+
+type AllianceMaterialsProductsSearchResponse struct {
+	doudian_sdk.BaseDoudianOpApiResponse
+	Data *AllianceMaterialsProductsSearchData `json:"data"`
+}
+type ProductsItem struct {
+	// 商品id
+	ProductId int64 `json:"product_id"`
+	// 商品标题
+	Title string `json:"title"`
+	// 商品售价（单位为分）
+	Price int64 `json:"price"`
+	// 普通佣金比例（乘100，例如10%为10）
+	CosRatio float64 `json:"cos_ratio"`
+	// 普通佣金金额（单位为分）
+	CosFee int64 `json:"cos_fee"`
+	// 商品一级类目
+	FirstCid int64 `json:"first_cid"`
+	// 商品二级类目
+	SecondCid int64 `json:"second_cid"`
+	// 商品三级类目
+	ThirdCid int64 `json:"third_cid"`
+	// 是否有库存
+	InStock bool `json:"in_stock"`
+	// 历史总销量
+	Sales int64 `json:"sales"`
+	// 商品主图
+	Cover string `json:"cover"`
+	// 商品链接（普通计划链接）
+	DetailUrl string `json:"detail_url"`
+	// 店铺ID
+	ShopId int64 `json:"shop_id"`
+	// 店铺名称
+	ShopName string `json:"shop_name"`
+	// 券后价（单位：分）
+	CouponPrice int64 `json:"coupon_price"`
+	// 是否可分销
+	Sharable bool `json:"sharable"`
+}
+type AllianceMaterialsProductsSearchData struct {
+	// 商品总数
+	Total int64 `json:"total"`
+	// 商品列表
+	Products []ProductsItem `json:"products"`
+}
